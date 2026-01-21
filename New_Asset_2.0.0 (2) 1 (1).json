@@ -12,14 +12,14 @@
   "webcomponents": [
     {
       "kind": "main",
-      "tag": "com-fd-djaja-sap-sac-excel",
+      "tag": "com-fd-djaja-sap-sac-excell",
       "url": "https://arnav973.github.io/sac-custom-widgets/excell.js",
       "integrity": "",
       "ignoreIntegrity": true
     },
     {
       "kind": "styling",
-      "tag": "com-fd-djaja-sap-sac-excel-aps",
+      "tag": "com-fd-djaja-sap-sac-excell-aps",
       "url": "https://arnav973.github.io/sac-custom-widgets/aps_excell.js",
       "integrity": "",
       "ignoreIntegrity": true
