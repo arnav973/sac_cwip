@@ -1,4 +1,4 @@
-/* xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */ ! function(e) {
+/* xlsxx.js (C) 2013-present SheetJS -- http://sheetjs.com */ ! function(e) {
     if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
     else if ("function" == typeof define && define.amd) {
         JSZip = e();
