@@ -135,7 +135,7 @@
         onCustomWidgetAfterUpdate(changedProperties) {
             var that = this;
 
-            let xlsxjs = "https://arnav973.github.io/sac-custom-widgets/xlsxx.js";
+            let xlsxjs = "https://arnav973.github.io/sac-cwip/xlsxx.js";
             async function LoadLibs() {
                 try {
                     await loadScript(xlsxjs, _shadowRoot);
@@ -220,7 +220,7 @@
         }
 
     }
-    customElements.define("com-fd-djaja-sap-sac-excell", Excel);
+    customElements.define("com-fd-djaja-sap-sac-excel", Excel);
 
     // UTILS
     function loadthis(that, changedProperties) {
@@ -301,13 +301,16 @@
                     },
 
                     onValidate: function (e) {
-                        var fU = this.getView().byId("idfileUploader");
-                        var domRef = fU.getFocusDomRef();
-                        var domRef = this.getView().byId("__xmlview1--idfileUploader-fu").getFocusDomRef();
-                        var file = domRef.files[0];
-                        var this_ = this;
+                    var fU = this.getView().byId("idfileUploader");
+                    //var domRef = fU.getFocusDomRef();
+                    //var domRef = this.getView().byId("__xmlview1--idfileUploader-fu").getFocusDomRef();
+                    //var file = domRef.files[0];
+                    var file = $("#__xmlview1--idfileUploader-fu")[0].files[0];
+                    var this_ = this;
 
-                        this_.wasteTime();
+                     this_.wasteTime();
+
+
 
                         var oModel = new JSONModel();
                         oModel.setData({
@@ -359,7 +362,6 @@
                                                       'CWIP_T_CLASS': rec[1].trim(),
                                                       'CWIP_T_MONTH': rec[2].trim(),
                                                       'RETIREMENT_MONTH': rec[3].trim(),
-                                                     
                                                     });
                                                 }
                                             }
