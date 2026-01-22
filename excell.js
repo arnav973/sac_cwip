@@ -237,7 +237,7 @@
 
         if(that._firstConnection === 0) {
             let div0 = document.createElement('div');
-            div0.innerHTML = '<?xml version="1.0"?><script id="oView_' + widgetName + '" name="oView_' + widgetName + '" type="sapui5/xmlview"><mvc:View height="100%" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" controllerName="myView.Template"><f:SimpleForm editable="true"><f:content><Label text="Upload"></Label><VBox><u:FileUploader id="idfileUploader" width="100%" useMultipart="false" sendXHR="true" sameFilenameAllowed="false" buttonText="" fileType="XLSM" placeholder="Choose a file" style="Emphasized"/><Button text="Upload" press="onValidate" id="__uploadButton" tooltip="Upload a File"/></VBox></f:content></f:SimpleForm></mvc:View></script>';
+            div0.innerHTML = '<?xml version="1.0"?><script id="oView_' + widgetName + '" name="oView_' + widgetName + '" type="sapui5/xmlview"><mvc:View height="100%" xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" controllerName="myView.Template"><f:SimpleForm editable="true"><f:content><Label text="Upload"></Label><VBox><u:FileUploader id="idfileUploader" width="100%" useMultipart="false" sendXHR="true" sameFilenameAllowed="false" buttonText="" fileType="xlsx,xlsm" placeholder="Choose a file" style="Emphasized"/><Button text="Upload" press="onValidate" id="__uploadButton" tooltip="Upload a File"/></VBox></f:content></f:SimpleForm></mvc:View></script>';
             _shadowRoot.appendChild(div0);
 
             let div1 = document.createElement('div');
@@ -319,134 +319,127 @@
 
                         var reader = new FileReader();
                         reader.onload = async function (e) {
+
                             var strCSV = e.target.result;
 
-                            var workbook = XLSX.read(strCSV, {
-                                type: 'binary'
-                            });
+                            var workbook = XLSX.read(strCSV, { type: "binary" });
 
                             var result_final = [];
-                            var result = [];
                             var correctsheet = false;
 
-                            workbook.SheetNames.forEach(function (sheetName) {
-                                if (sheetName === "Sheet1") {
-                                    correctsheet = true;
-                                    var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
-                                    if (csv.length) {
-                                        result.push(csv);
-                                    }
-                                    result = result.join("[$@~!~@$]")
-                                }
-                            });
+                            // ====== CHECK SHEET ======
+                            if (workbook.SheetNames.indexOf("Sheet1") !== -1) {
+                                correctsheet = true;
+                            }
 
-                            if (correctsheet) {
-                                var lengthfield = result.split("[$@~!~@$]")[0].split("[#@~!~@#]").length;
-                                console.log("lengthfield: " + lengthfield);
+                            if (!correctsheet) {
+                                this_.runNext();
+                                fU.setValue("");
+                                MessageToast.show("Please upload the correct file (Sheet1 missing)");
+                                return;
+                            }
 
-                                var total = this_.getView().byId("total");
-                                var rec_count = 0;
+                            var ws = workbook.Sheets["Sheet1"];
 
-                                var len = 0;
-                                if (lengthfield === 4) {
-                                    for (var i = 1; i < result.split("[$@~!~@$]").length; i++) {
-                                        if (result.split("[$@~!~@$]")[i].length > 0) {
+                            // ====== READ EXCEL AS ARRAY ======
+                            var data = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
 
-                                            var rec = result.split("[$@~!~@$]")[i].split("[#@~!~@#]");
-                                            if (rec.length > 0) {
-                                                len = rec[0].trim().length + rec[1].trim().length + rec[2].trim().length + rec[3].trim().length;
-                                                if (len > 0) {
-                                                    rec_count = rec_count + 1;
-                                                    result_final.push({
-                                                     'ID': rec[0].trim(),
-                                                      'CWIPCLASS': rec[1].trim(),
-                                                      'CWIPMONTH': rec[2].trim(),
-                                                      'RETIREMENTMONTH': rec[3].trim(),
-                                                    });
-                                                }
-                                            }
-                                        }
-                                    }
+                            if (!data || data.length <= 1) {
+                                fU.setValue("");
+                                MessageToast.show("There is no record to be uploaded");
+                                this_.runNext();
+                                return;
+                            }
 
-                                    if (result_final.length === 0) {
-                                        fU.setValue("");
-                                        MessageToast.show("There is no record to be uploaded");
-                                        this_.runNext();
-                                    } else if (result_final.length >= 2001) {
-                                        fU.setValue("");
-                                        MessageToast.show("Maximum records are 2000.");
-                                        this_.runNext();
-                                    } else {
-                                        // Bind the data to the Table
-                                        oModel = new JSONModel();
-                                        oModel.setSizeLimit("5000");
-                                        oModel.setData({
-                                            result_final: result_final
-                                        });
+                            // ====== HEADER VALIDATION ======
+                            var header = data[0].map(x => (x + "").trim().toUpperCase());
+                            header = header.filter(x => x !== "");
 
-                                        var oModel1 = new sap.ui.model.json.JSONModel();
-                                        oModel1.setData({
-                                            fname: file.name,
-                                        });
-                                        console.log(oModel);
+                            var expectedHeader = ["ID", "CWIPCLASS", "CWIPMONTH", "RETIREMENTMONTH"];
 
-                                        // var oHeaders =  {
-                                        //     "Authorization": "Basic XXXXXXXX",
-                                        //     "Content-Type": "application/x-www-form-urlencoded"
-                                        // }
+                            if (header.length !== 4) {
+                                this_.runNext();
+                                fU.setValue("");
+                                MessageToast.show("Please upload the correct file (Wrong column count)");
+                                return;
+                            }
 
-                                        _result = JSON.stringify(result_final);
-
-                                        that._firePropertiesChanged();
-                                            this.settings = {};
-                                            this.settings.result = "";
-
-                                            that.dispatchEvent(new CustomEvent("onStart", {
-                                                detail: {
-                                                    settings: this.settings
-                                                }
-                                            }));
-
-                                            this_.runNext();
-
-                                        //var oModel = new JSONModel();
-
-                                        //console.log(result_final);
-                                        //oModel.loadData("processData.xsjs", JSON.stringify(result_final), true, 'POST', false, true, oHeaders);
-
-                                        // oModel.attachRequestCompleted(function() {
-                                        //     var result = oModel.getData();
-                                        //     console.log(result);
-
-                                        //     _result = result;
-
-                                        //     that._firePropertiesChanged();
-                                        //     this.settings = {};
-                                        //     this.settings.result = "";
-
-                                        //     that.dispatchEvent(new CustomEvent("onStart", {
-                                        //         detail: {
-                                        //             settings: this.settings
-                                        //         }
-                                        //     }));
-
-                                        //     this_.runNext();
-
-                                        // });
-
-
-                                        fU.setValue("");
-                                    }
-                                } else {
+                            for (var h = 0; h < expectedHeader.length; h++) {
+                                if (header[h] !== expectedHeader[h]) {
                                     this_.runNext();
                                     fU.setValue("");
-                                    MessageToast.show("Please upload the correct file");
+                                    MessageToast.show("Please upload the correct file (Wrong header name)");
+                                    return;
                                 }
-                            } else {
-                                this_.runNext();
-                                console.log("Error: wrong Excel File template");
-                                MessageToast.show("Please upload the correct file");
                             }
+
+                            // ====== READ DATA ROWS ======
+                            var rec_count = 0;
+
+                            for (var i = 1; i < data.length; i++) {
+
+                                var row = data[i] || [];
+
+                                var ID = (row[0] + "").trim();
+                                var CWIPCLASS = (row[1] + "").trim();
+                                var CWIPMONTH = (row[2] + "").trim();
+                                var RETIREMENTMONTH = (row[3] + "").trim();
+
+                                // Skip fully blank row
+                                if ((ID + CWIPCLASS + CWIPMONTH + RETIREMENTMONTH).length === 0) {
+                                    continue;
+                                }
+
+                                // Mandatory check
+                                if (!ID || !CWIPCLASS || !CWIPMONTH || !RETIREMENTMONTH) {
+                                    this_.runNext();
+                                    fU.setValue("");
+                                    MessageToast.show("Blank values found. Please fill all columns.");
+                                    return;
+                                }
+
+                                rec_count++;
+
+                                if (rec_count > 2000) {
+                                    this_.runNext();
+                                    fU.setValue("");
+                                    MessageToast.show("Maximum records are 2000.");
+                                    return;
+                                }
+
+                                result_final.push({
+                                    ID: ID,
+                                    CWIPCLASS: CWIPCLASS,
+                                    CWIPMONTH: CWIPMONTH,
+                                    RETIREMENTMONTH: RETIREMENTMONTH
+                                });
+                            }
+
+                            // ====== FINAL CHECK ======
+                            if (result_final.length === 0) {
+                                fU.setValue("");
+                                MessageToast.show("There is no record to be uploaded");
+                                this_.runNext();
+                                return;
+                            }
+
+                            // ====== SUCCESS FLOW ======
+                            oModel = new JSONModel();
+                            oModel.setSizeLimit("5000");
+                            oModel.setData({ result_final: result_final });
+
+                            _result = JSON.stringify(result_final);
+
+                            that._firePropertiesChanged();
+                            this.settings = {};
+                            this.settings.result = "";
+
+                            that.dispatchEvent(new CustomEvent("onStart", {
+                                detail: { settings: this.settings }
+                            }));
+
+                            this_.runNext();
+                            fU.setValue("");
                         };
 
                         if (typeof file !== 'undefined') {
@@ -504,4 +497,4 @@
             shadowRoot.appendChild(script)
         });
     }
-})();             
+})();      
