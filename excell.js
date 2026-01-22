@@ -355,7 +355,7 @@
                             var header = data[0].map(x => (x + "").trim().toUpperCase());
                             header = header.filter(x => x !== "");
 
-                            var expectedHeader = ["ID", "CWIPCLASS", "CWIPMONTH", "RETIREMENTMONTH"];
+                            var expectedHeader = ["ID", "CWIP_T_CLASS", "CWIP_T_MONTH", "RETIREMENT_MONTH"];
 
                             if (header.length !== 4) {
                                 this_.runNext();
