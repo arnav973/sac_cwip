@@ -453,13 +453,13 @@
                         }
                     },
 
-                  /*  wasteTime: function() {
+                    wasteTime: function() {
                         busyDialog.open();
                     },
 
                     runNext: function() {
                         busyDialog.close();
-                    },*/
+                    },
 
                 });
             });
