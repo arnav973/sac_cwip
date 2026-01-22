@@ -13,14 +13,14 @@
     {
       "kind": "main",
       "tag": "com-fd-djaja-sap-sac-excel",
-      "url": "https://arnav973.github.io/sac-custom-widgets/excel.js",
+      "url": "https://arnav973.github.io/sac_cwip/excell.js",
       "integrity": "",
       "ignoreIntegrity": true
     },
     {
       "kind": "styling",
       "tag": "com-fd-djaja-sap-sac-excel-aps",
-      "url": "https://arnav973.github.io/sac-custom-widgets/aps_excel.js",
+      "url": "https://arnav973.github.io/sac_cwip/aps_excell.js",
       "integrity": "",
       "ignoreIntegrity": true
     }
