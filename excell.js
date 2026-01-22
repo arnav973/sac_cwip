@@ -381,17 +381,17 @@
                                 var row = data[i] || [];
 
                                 var ID = (row[0] + "").trim();
-                                var CWIPCLASS = (row[1] + "").trim();
-                                var CWIPMONTH = (row[2] + "").trim();
-                                var RETIREMENTMONTH = (row[3] + "").trim();
+                                var CWIP_T_CLASS = (row[1] + "").trim();
+                                var CWIP_T_MONTH = (row[2] + "").trim();
+                                var RETIREMENT_MONTH = (row[3] + "").trim();
 
                                 // Skip fully blank row
-                                if ((ID + CWIPCLASS + CWIPMONTH + RETIREMENTMONTH).length === 0) {
+                                if ((ID + CWIP_T_CLASS + CWIP_T_MONTH + RETIREMENT_MONTH).length === 0) {
                                     continue;
                                 }
 
                                 // Mandatory check
-                                if (!ID || !CWIPCLASS || !CWIPMONTH || !RETIREMENTMONTH) {
+                                if (!ID || !CWIP_T_CLASS || !CWIP_T_MONTH || !RETIREMENT_MONTH) {
                                     this_.runNext();
                                     fU.setValue("");
                                     MessageToast.show("Blank values found. Please fill all columns.");
@@ -409,9 +409,9 @@
 
                                 result_final.push({
                                     ID: ID,
-                                    CWIPCLASS: CWIPCLASS,
-                                    CWIPMONTH: CWIPMONTH,
-                                    RETIREMENTMONTH: RETIREMENTMONTH
+                                    CWIP_T_CLASS: CWIP_T_CLASS,
+                                    CWIP_T_MONTH: CWIP_T_MONTH,
+                                    RETIREMENT_MONTH: RETIREMENT_MONTH
                                 });
                             }
 
