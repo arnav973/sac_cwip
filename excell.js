@@ -348,24 +348,20 @@
                                 var rec_count = 0;
 
                                 var len = 0;
-                                if (lengthfield === 7) {
+                                if (lengthfield === 4) {
                                     for (var i = 1; i < result.split("[$@~!~@$]").length; i++) {
                                         if (result.split("[$@~!~@$]")[i].length > 0) {
 
                                             var rec = result.split("[$@~!~@$]")[i].split("[#@~!~@#]");
                                             if (rec.length > 0) {
-                                                len = rec[0].trim().length + rec[1].trim().length + rec[2].trim().length + rec[3].trim().length + rec[4].trim().length + 
-                                                    rec[5].trim().length + rec[6].trim().length;
+                                                len = rec[0].trim().length + rec[1].trim().length + rec[2].trim().length + rec[3].trim().length;
                                                 if (len > 0) {
                                                     rec_count = rec_count + 1;
                                                     result_final.push({
                                                      'ID': rec[0].trim(),
-                                                      'DESCRIPTION': rec[1].trim(),
-                                                      'H1': rec[2].trim(),
-                                                      'COMPANY': rec[3].trim(),
-                                                      'ASSET_CLASS': rec[4].trim(),
-                                                      'COSTCENTER': rec[5].trim(),
-                                                      'CAPITALIZED': rec[6].trim(),
+                                                      'CWIPCLASS': rec[1].trim(),
+                                                      'CWIPMONTH': rec[2].trim(),
+                                                      'RETIREMENTMONTH': rec[3].trim(),
                                                     });
                                                 }
                                             }
