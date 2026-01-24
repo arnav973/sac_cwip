@@ -390,13 +390,8 @@
                                     continue;
                                 }
 
-                                // Mandatory check
-                                if (!ID || !CWIP_T_CLASS || !CWIP_T_MONTH || !RETIREMENT_MONTH) {
-                                    this_.runNext();
-                                    fU.setValue("");
-                                    MessageToast.show("Blank values found. Please fill all columns.");
-                                    return;
-                                }
+                                // ✅ NO validation on empty cells (accept partial row also)
+                                // (Mandatory check removed as per requirement)
 
                                 rec_count++;
 
