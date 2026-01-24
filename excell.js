@@ -374,7 +374,7 @@
                             }
 
                             // ====== READ DATA ROWS ======
-                           /* var rec_count = 0;
+                            var rec_count = 0;
 
                             for (var i = 1; i < data.length; i++) {
 
@@ -396,7 +396,7 @@
                                     fU.setValue("");
                                     MessageToast.show("Blank values found. Please fill all columns.");
                                     return;
-                                }*/
+                                }
 
                                 rec_count++;
 
