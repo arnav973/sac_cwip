@@ -127,7 +127,7 @@
         onCustomWidgetAfterUpdate(changedProperties) {
             var that = this;
 
-            let xlsxjs = "https://arnav973.github.io/sac_cwip/xlsxx.js";
+            let xlsxjs = "/xlsxx.js";
 
             async function LoadLibs() {
                 try {
